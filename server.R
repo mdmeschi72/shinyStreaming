@@ -7,17 +7,19 @@
 
 library(shiny)
 
-function(input, output) {
+function(input, output, session) {
 
   # invalidate later will automatically invalide the 
   # object every 5 seconds, in effect checking the .csv file every 
   # 5 seconds for changes and redrawing the graph
   # this is perfect for streaming 
   
-  data <- reactive({
-    invalidateLater(5000)
-    read.csv("/home/mark/Documents/data.csv")
-  })
+  data <- reactiveFileReader(
+     5000,  
+     session, 
+     '/home/mark/Documents/data.csv',
+     read.csv
+  )
   
   output$line <- renderPlot({
     plot(data(), type="l")
